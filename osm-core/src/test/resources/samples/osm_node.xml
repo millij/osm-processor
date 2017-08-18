@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.4.0 (21260 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <node id="3233393892" visible="true" version="10" changeset="37962054" timestamp="2016-03-20T19:12:34Z" user="PlaneMad" uid="1306" lat="13.0796914" lon="80.2829533">
+  <tag k="capital" v="4"/>
+  <tag k="gns:dsg" v="ADM2"/>
+  <tag k="gns:uni" v="-2919695"/>
+  <tag k="is_capital" v="state"/>
+  <tag k="is_in:continent" v="Asia"/>
+  <tag k="is_in:country" v="India"/>
+  <tag k="is_in:country_code" v="IN"/>
+  <tag k="is_in:district" v="Chennai"/>
+  <tag k="is_in:state" v="State of Tamil Nadu"/>
+  <tag k="name" v="Chennai"/>
+  <tag k="name:de" v="Chennai"/>
+  <tag k="name:en" v="Chennai"/>
+  <tag k="name:fr" v="Chennai"/>
+  <tag k="name:hi" v="चेन्नई"/>
+  <tag k="name:ja" v="チェンナイ"/>
+  <tag k="name:kn" v="ಚೆನ್ನೈ"/>
+  <tag k="name:lt" v="Čenajus"/>
+  <tag k="name:ml" v="ചെന്നൈ"/>
+  <tag k="name:pl" v="Ćennaj"/>
+  <tag k="name:ru" v="Ченнаи"/>
+  <tag k="name:ta" v="சென்னை"/>
+  <tag k="name:te" v="చెన్నై"/>
+  <tag k="name:uk" v="Ченнаї"/>
+  <tag k="old_name" v="Madras"/>
+  <tag k="place" v="city"/>
+  <tag k="place:cca" v="a1"/>
+  <tag k="population" v="4681087"/>
+  <tag k="postal_code" v="600001"/>
+  <tag k="source" v="GNS;http://en.wikipedia.org/wiki/Chennai"/>
+  <tag k="wikipedia" v="en:Chennai"/>
+ </node>
+</osm>
