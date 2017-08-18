@@ -1,0 +1,66 @@
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+group = 'com.github.osm'
+version = '0.1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+
+    // Main compile
+    // ----------------------------------------------------------------------------------
+
+    // Slf4j
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+
+    // Mongo
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
+    compile group: 'org.mongodb.morphia', name: 'morphia', version: '1.3.2'
+
+
+    // Test compile
+    // ----------------------------------------------------------------------------------
+
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+
+    testCompile group: "org.slf4j", name: "slf4j-log4j12", version: "1.7.12"
+
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+
+// Standalone Run
+task run(type: JavaExec, dependsOn: classes) {
+    // App Args
+    if(project.hasProperty('appArgs')){
+        args(appArgs.split(','))
+    }
+
+    main = 'com.mandark.geo.osm.ImportMain'
+
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
+}
+
+
+// Java Source Compatibility
+
+compileJava.doFirst { println "Java source compatibility version : " + sourceCompatibility }
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
