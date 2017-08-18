@@ -21,7 +21,9 @@ dependencies {
 
     // Slf4j
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
-    
+
+    // Apache Commons
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 
     // Jackson
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.3'
