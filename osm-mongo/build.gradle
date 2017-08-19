@@ -19,12 +19,14 @@ dependencies {
     // Main compile
     // ----------------------------------------------------------------------------------
 
+    compile project(':osm-core')
+
     // Slf4j
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
 
     // Mongo
     compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
-    compile group: 'org.mongodb.morphia', name: 'morphia', version: '1.3.2'
+    // compile group: 'org.mongodb.morphia', name: 'morphia', version: '1.3.2'
 
 
     // Test compile
