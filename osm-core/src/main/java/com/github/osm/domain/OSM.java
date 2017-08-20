@@ -3,9 +3,6 @@ package com.github.osm.domain;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.osm.domain.OsmEntity.Type;
 
 
@@ -15,8 +12,6 @@ import com.github.osm.domain.OsmEntity.Type;
  */
 public class OSM {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OSM.class);
-    
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssz";
 
     public static final String ELEMENT_NODE = "node";

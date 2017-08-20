@@ -1,4 +1,4 @@
-package com.github.osm.reader;
+package com.github.osm.sax;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,13 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.osm.domain.Node;
+import com.github.osm.reader.OsmXmlReader;
 import com.github.osm.sax.OsmSaxHandler;
 import com.github.osm.sax.SimpleOsmSaxHandler;
 
 
-public class OsmXmlReaderTest {
+public class SimpleOsmSaxHandlerTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OsmXmlReaderTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleOsmSaxHandlerTest.class);
 
     private OsmXmlReader _osmXmlReader;
     private OsmSaxHandler _osmSaxHandler;
