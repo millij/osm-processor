@@ -1,5 +1,4 @@
 
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -24,11 +23,6 @@ dependencies {
 
     // Apache Commons
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-
-    // Jackson
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.3'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.3'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.3'
 
 
     // Test compile

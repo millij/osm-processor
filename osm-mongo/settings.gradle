@@ -1,0 +1,5 @@
+rootProject.name = 'osm-mongo'
+
+// osm-core
+include 'osm-core'
+project(':osm-core').projectDir = file('../osm-core')
