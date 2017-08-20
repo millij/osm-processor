@@ -66,7 +66,5 @@ public class MongoStoreTest {
         }
     }
 
-    
-
 
 }
