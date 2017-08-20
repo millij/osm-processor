@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.osm.domain.Node;
 import com.github.osm.sax.OsmSaxHandler;
 import com.github.osm.sax.SimpleOsmSaxHandler;
 
@@ -69,6 +71,13 @@ public class OsmXmlReaderTest {
         LOGGER.info("OsmXMLread Result for - {} is : {}", _osmXml_sample1, result);
         
         Assert.assertTrue(result != null && result.size() >0);
+
+        // Simple Handler
+        final SimpleOsmSaxHandler simpleHandler = (SimpleOsmSaxHandler) _osmSaxHandler;
+        List<Node> nodes = simpleHandler.getNodes();
+        LOGGER.info("Nodes Read : {}", nodes);
+
+        Assert.assertTrue(nodes != null && nodes.size() > 0);
     }
 
     @Test
