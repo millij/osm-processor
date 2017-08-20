@@ -12,10 +12,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.github.osm.domain.MetaInfo;
+import com.github.osm.domain.Node;
 import com.github.osm.domain.OSM;
-import com.github.osm.domain.OsmEntity;
 import com.github.osm.domain.OsmEntity.Type;
+import com.github.osm.domain.Relation;
 import com.github.osm.domain.RelationMember;
+import com.github.osm.domain.Way;
 
 /**
  * An abstract event handler for OSM XML parsing events.
@@ -161,21 +163,27 @@ public abstract class OsmSaxHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         super.endElement(uri, localName, qName);
+        LOGGER.debug("Element parsing completed - qname: {}, triggering callback", qName);
 
-        OsmEntity osmElemObj = null;
         switch (qName) {
             case NODE_ELEMENT:
-                osmElemObj = OSM.node(osmId, metaInfo, tagsMap, latitude, longitude);
+                Node node = OSM.node(osmId, metaInfo, tagsMap, latitude, longitude);
+                this.handleNode(node);
+
                 resetTempVariables(); // Sanity work
                 break;
 
             case WAY_ELEMENT:
-                osmElemObj = OSM.way(osmId, metaInfo, tagsMap, nodeIds);
+                Way way = OSM.way(osmId, metaInfo, tagsMap, nodeIds);
+                this.handleWay(way);
+
                 resetTempVariables(); // Sanity work
                 break;
 
             case RELATION_ELEMENT:
-                osmElemObj = OSM.relation(osmId, metaInfo, tagsMap, members);
+                Relation relation = OSM.relation(osmId, metaInfo, tagsMap, members);
+                this.handleRelation(relation);
+
                 resetTempVariables(); // Sanity work
                 break;
 
@@ -190,12 +198,6 @@ public abstract class OsmSaxHandler extends DefaultHandler {
                 break;
         }
 
-        LOGGER.debug("Element parsing completed - qname: {}", qName);
-
-        // Trigger callback
-        if (osmElemObj != null) {
-            this.elementCompleted(qName, osmElemObj);
-        }
     }
 
     @Override
@@ -225,18 +227,30 @@ public abstract class OsmSaxHandler extends DefaultHandler {
     // ------------------------------------------------------------------------
 
     /**
-     * This callback is called once for every element present in the XML.
+     * Callback for handling nodes.
      * 
-     * @param elemName name of the element that is read
-     * @param element object representation of the element that is read.
+     * @param node object
      */
-    public abstract void elementCompleted(String elemName, OsmEntity element);
+    public abstract void handleNode(Node node);
+
+    /**
+     * Callback for handling ways.
+     * 
+     * @param way object
+     */
+    public abstract void handleWay(Way way);
+
+    /**
+     * Callback for handling relations.
+     * 
+     * @param relation object
+     */
+    public abstract void handleRelation(Relation relation);
 
     /**
      * This callback is called once after the whole document is read.
      */
     public abstract void documentCompleted();
-
 
 
     // Counts

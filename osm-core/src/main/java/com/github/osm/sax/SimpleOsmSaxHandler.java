@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.osm.domain.Bound;
 import com.github.osm.domain.Node;
-import com.github.osm.domain.OsmEntity;
 import com.github.osm.domain.Relation;
 import com.github.osm.domain.Way;
 
@@ -78,23 +77,30 @@ public final class SimpleOsmSaxHandler extends OsmSaxHandler {
     }
 
     @Override
-    public void elementCompleted(String elemName, OsmEntity element) {
-        switch (elemName) {
-            case NODE_ELEMENT:
-                this.nodes.add((Node) element);
-                break;
-
-            case WAY_ELEMENT:
-                this.ways.add((Way) element);
-                break;
-
-            case RELATION_ELEMENT:
-                this.relations.add((Relation) element);
-                break;
-
-            default:
-                break;
+    public void handleNode(Node node) {
+        if (node == null) {
+            return;
         }
+
+        this.nodes.add(node);
+    }
+
+    @Override
+    public void handleWay(Way way) {
+        if (way == null) {
+            return;
+        }
+
+        this.ways.add(way);
+    }
+
+    @Override
+    public void handleRelation(Relation relation) {
+        if (relation == null) {
+            return;
+        }
+
+        this.relations.add(relation);
     }
 
 
@@ -114,6 +120,5 @@ public final class SimpleOsmSaxHandler extends OsmSaxHandler {
     public long getRelationsCount() {
         return this.ways.size();
     }
-
 
 }
