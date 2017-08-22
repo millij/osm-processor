@@ -61,7 +61,7 @@ public class OsmMongoStoreTest {
         _mongoStore.insert(inNode);
 
         // read back
-        Node outNode = _mongoStore.findOne(Node.class, osmId);
+        Node outNode = _mongoStore.node(osmId);
         LOGGER.info("Node read from db : {}", outNode);
 
         Assert.assertNotNull(outNode);

@@ -1,8 +1,5 @@
 package com.github.osm.mongo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,22 +40,8 @@ public class OsmMongoStore extends MongoStore {
     }
 
 
-    // MongoStore Methods
-    // ------------------------------------------------------------------------
-
-    // Collections
-
-    public static <T extends OsmEntity> String getCollectionName(final Class<T> osmEntityClz) {
-        // Sanity checks
-        if (osmEntityClz == null) {
-            throw new IllegalArgumentException("collectionName :: OSM Entity class should not be null");
-        }
-
-        return osmEntityClz.getSimpleName().toLowerCase();
-    }
-
-
     // Insert Methods
+    // ------------------------------------------------------------------------
 
     public void insert(final Node node) {
         // Sanity checks
@@ -91,41 +74,75 @@ public class OsmMongoStore extends MongoStore {
     }
 
 
-    // Find Methods
+    // Count Method
+    // ------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    public <T extends OsmEntity> T findOne(final Class<T> osmEntityClz, final long osmId) {
+    public <T extends OsmEntity> long count(final Class<T> osmEntityClz) {
+        final String collectionName = this.getCollectionName(osmEntityClz);
+        return this.count(collectionName);
+    }
+
+
+    // Find Methods
+    // ------------------------------------------------------------------------
+
+
+    // Node
+
+    public Node node(final long osmId) {
+        // Result
+        Document result = this.findOne(COLLECTION_NODE, new Document("osmId", osmId));
+        LOGGER.debug("Fetched Node with OSM id : {} - {}", osmId, result);
+
+        return result == null ? null : MongoMapper.asNode(result);
+    }
+
+    public Iterable<Document> nodes(final Document filter) {
+        return this.find(COLLECTION_NODE, filter);
+    }
+
+
+    // Way
+
+    public Way way(final long osmId) {
+        // Result
+        Document result = this.findOne(COLLECTION_WAY, new Document("osmId", osmId));
+        LOGGER.debug("Fetched Way with OSM id : {} - {}", osmId, result);
+
+        return result == null ? null : MongoMapper.asWay(result);
+    }
+
+    public Iterable<Document> ways(final Document filter) {
+        return this.find(COLLECTION_WAY, filter);
+    }
+
+
+    // Relation
+
+    public Relation relation(final long osmId) {
+        // Result
+        Document result = this.findOne(COLLECTION_RELATION, new Document("osmId", osmId));
+        LOGGER.debug("Fetched Relation with OSM id : {} - {}", osmId, result);
+
+        return result == null ? null : MongoMapper.asRelation(result);
+    }
+
+    public Iterable<Document> relations(final Document filter) {
+        return this.find(COLLECTION_RELATION, filter);
+    }
+
+
+    // Private Methods
+    // ------------------------------------------------------------------------
+
+    private <T extends OsmEntity> String getCollectionName(final Class<T> osmEntityClz) {
         // Sanity checks
         if (osmEntityClz == null) {
-            throw new IllegalArgumentException("findOne :: OSM Entity class should not be null");
+            throw new IllegalArgumentException("collectionName :: OSM Entity class should not be null");
         }
 
-        // filter
-        final Document filter = new Document("osmId", osmId);
-        LOGGER.debug("Fetching {} document with OSM id : {}", osmEntityClz, osmId);
-
-        // Result
-        final String collectionName = getCollectionName(osmEntityClz);
-        Document result = this.findOne(collectionName, filter);
-
-        if (osmEntityClz.equals(Node.class)) {
-            return (T) MongoMapper.asNode(result);
-        } else if (osmEntityClz.equals(Way.class)) {
-            return (T) MongoMapper.asWay(result);
-        } else if (osmEntityClz.equals(Relation.class)) {
-            return (T) MongoMapper.asRelation(result);
-        }
-
-        throw new RuntimeException("Unknown OSM entity class passed");
+        return osmEntityClz.getSimpleName().toLowerCase();
     }
-
-
-    public <T extends OsmEntity> List<T> find(final Class<T> osmEntity, final Document filter) {
-        // Sanity checks
-
-        return new ArrayList<T>();
-    }
-
 
 
 }
