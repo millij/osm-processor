@@ -94,7 +94,7 @@ public class OsmMongoStore extends MongoStore {
         Document result = this.findOne(COLLECTION_NODE, new Document("osmId", osmId));
         LOGGER.debug("Fetched Node with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.asNode(result);
+        return result == null ? null : MongoMapper.node(result);
     }
 
     public Iterable<Document> nodes(final Document filter) {
@@ -109,7 +109,7 @@ public class OsmMongoStore extends MongoStore {
         Document result = this.findOne(COLLECTION_WAY, new Document("osmId", osmId));
         LOGGER.debug("Fetched Way with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.asWay(result);
+        return result == null ? null : MongoMapper.way(result);
     }
 
     public Iterable<Document> ways(final Document filter) {
@@ -124,7 +124,7 @@ public class OsmMongoStore extends MongoStore {
         Document result = this.findOne(COLLECTION_RELATION, new Document("osmId", osmId));
         LOGGER.debug("Fetched Relation with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.asRelation(result);
+        return result == null ? null : MongoMapper.relation(result);
     }
 
     public Iterable<Document> relations(final Document filter) {

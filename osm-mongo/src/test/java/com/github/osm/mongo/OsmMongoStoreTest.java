@@ -20,7 +20,7 @@ public class OsmMongoStoreTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsmMongoStoreTest.class);
 
-    private OsmMongoStore _mongoStore;
+    private OsmMongoStore _osmMongoStore;
 
 
     // Setup
@@ -30,7 +30,7 @@ public class OsmMongoStoreTest {
     public void setup() throws ParseException {
         // init
         final MongoConfig config = MongoConfig.with("localhost", 27017, "mongo_java_test");
-        _mongoStore = OsmMongoStore.withConfig(config);
+        _osmMongoStore = OsmMongoStore.withConfig(config);
     }
 
     @After
@@ -45,7 +45,7 @@ public class OsmMongoStoreTest {
     @Test(expected = IllegalArgumentException.class)
     public void test_insert_node_null() {
         Node node = null;
-        _mongoStore.insert(node);
+        _osmMongoStore.insert(node);
     }
 
     @Test
@@ -58,10 +58,10 @@ public class OsmMongoStoreTest {
         Node inNode = OSM.node(osmId, mInfo, null, 12.12345, 77.12345);
 
         // insert
-        _mongoStore.insert(inNode);
+        _osmMongoStore.insert(inNode);
 
         // read back
-        Node outNode = _mongoStore.node(osmId);
+        Node outNode = _osmMongoStore.node(osmId);
         LOGGER.info("Node read from db : {}", outNode);
 
         Assert.assertNotNull(outNode);

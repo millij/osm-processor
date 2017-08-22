@@ -24,7 +24,7 @@ public class MongoOsmSaxHandlerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoOsmSaxHandlerTest.class);
 
-    private OsmMongoStore _mongoStore;
+    private OsmMongoStore _osmMongoStore;
     private OsmSaxHandler _osmSaxHandler;
 
     private OsmXmlReader _osmXmlReader;
@@ -40,11 +40,10 @@ public class MongoOsmSaxHandlerTest {
     public void setup() throws ParseException {
         // init
         final MongoConfig config = MongoConfig.with("localhost", 27017, "mongo_java_test");
-        _mongoStore = OsmMongoStore.withConfig(config);
+        _osmMongoStore = OsmMongoStore.withConfig(config);
 
         _osmXmlReader = new OsmXmlReader();
-        _osmSaxHandler = new MongoOsmSaxHandler(_mongoStore);
-
+        _osmSaxHandler = new MongoOsmSaxHandler(_osmMongoStore);
 
         // files
         _osmXml_sample1 = "src/test/resources/samples/osm_node.xml";
@@ -80,7 +79,7 @@ public class MongoOsmSaxHandlerTest {
         Assert.assertTrue(result != null && result.size() > 0);
         Assert.assertEquals(1, _osmSaxHandler.getNodesCount());
 
-        Node node = _mongoStore.findOne(Node.class, 3233393892L);
+        Node node = _osmMongoStore.node(3233393892L);
         Assert.assertEquals(3233393892L, node.getOsmId());
     }
 
