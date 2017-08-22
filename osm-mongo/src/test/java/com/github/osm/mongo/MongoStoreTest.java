@@ -1,6 +1,7 @@
 package com.github.osm.mongo;
 
 import java.text.ParseException;
+import java.util.List;
 
 import org.bson.Document;
 import org.junit.After;
@@ -38,6 +39,24 @@ public class MongoStoreTest {
 
     // Tests
     // ------------------------------------------------------------------------
+
+    @Test
+    public void test_emptyCollections() {
+        final String collName = "test";
+        final Document document = new Document("name", "unknown");
+        _mongoStore.insert(collName, document);
+
+        // Empty collections
+        _mongoStore.emptyCollections();
+
+        // find
+        List<Document> documents = _mongoStore.findAll(collName, new Document("name", "unknown"));
+        Assert.assertNotNull(documents);
+        Assert.assertEquals(0, documents.size());
+    }
+
+
+    // Insert
 
     @Test(expected = IllegalArgumentException.class)
     public void test_insert_null_collection() {

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.osm.domain.Node;
 import com.github.osm.mongo.OsmMongoStore;
-import com.github.osm.mongo.OsmMongoStoreTest;
 import com.github.osm.mongo.helper.MongoConfig;
 import com.github.osm.reader.OsmXmlReader;
 import com.github.osm.sax.OsmSaxHandler;
@@ -23,7 +22,7 @@ import com.github.osm.sax.OsmSaxHandler;
 
 public class MongoOsmSaxHandlerTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OsmMongoStoreTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoOsmSaxHandlerTest.class);
 
     private OsmMongoStore _mongoStore;
     private OsmSaxHandler _osmSaxHandler;
