@@ -3,6 +3,7 @@ package com.github.osm.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public final class Node extends OsmEntity {
 
     private final double latitude;

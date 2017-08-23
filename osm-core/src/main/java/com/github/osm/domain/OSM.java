@@ -12,20 +12,33 @@ import com.github.osm.domain.OsmEntity.Type;
  */
 public class OSM {
 
+    /**
+     * factory.
+     */
+    private OSM() {}
+
+
+    // Formats
+    // ------------------------------------------------------------------------
+
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssz";
+
+
+    // Labels
+    // ------------------------------------------------------------------------
+
+    // Elements
 
     public static final String ELEMENT_NODE = "node";
     public static final String ELEMENT_WAY = "way";
     public static final String ELEMENT_RELATION = "relation";
 
 
-    // Constructor
-    // ------------------------------------------------------------------------
+    // Attributes
 
-    /**
-     * factory.
-     */
-    private OSM() {}
+
+    // Tags
+
 
 
     // Factory methods for OSM domain Objects
@@ -47,15 +60,13 @@ public class OSM {
         return new Way(osmId, metaInfo, tags, nodeIds);
     }
 
-    public static RelationMember relationMember(long memberId, Type memberType, String memberRole) {
-        return new RelationMember(memberId, memberType, memberRole);
-    }
-
-    public static Relation relation(long osmId, MetaInfo metaInfo, Map<String, String> tags,
-            List<RelationMember> members) {
+    public static Relation relation(long osmId, MetaInfo metaInfo, Map<String, String> tags, List<Member> members) {
         return new Relation(osmId, metaInfo, tags, members);
     }
 
+    public static Member member(Type type, long refId, String role) {
+        return new Member(type, refId, role);
+    }
 
 
 }

@@ -4,20 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public final class Relation extends OsmEntity {
 
-    private final List<RelationMember> members;
+    private final List<Member> members;
 
 
     // Constructors
     // ------------------------------------------------------------------------
 
-    Relation(long osmId, MetaInfo metaInfo, Map<String, String> tags, List<RelationMember> members) {
+    Relation(long osmId, MetaInfo metaInfo, Map<String, String> tags, List<Member> members) {
         super(osmId, metaInfo, tags);
         this.members = members;
     }
 
-    Relation(long osmId, MetaInfo metaInfo, List<RelationMember> members) {
+    Relation(long osmId, MetaInfo metaInfo, List<Member> members) {
         this(osmId, metaInfo, new HashMap<>(), members);
     }
 
@@ -25,7 +26,7 @@ public final class Relation extends OsmEntity {
     // Getters and Setters
     // ------------------------------------------------------------------------
 
-    public List<RelationMember> getMembers() {
+    public List<Member> getMembers() {
         return members;
     }
 

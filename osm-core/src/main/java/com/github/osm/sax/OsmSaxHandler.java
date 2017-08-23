@@ -16,7 +16,7 @@ import com.github.osm.domain.Node;
 import com.github.osm.domain.OSM;
 import com.github.osm.domain.OsmEntity.Type;
 import com.github.osm.domain.Relation;
-import com.github.osm.domain.RelationMember;
+import com.github.osm.domain.Member;
 import com.github.osm.domain.Way;
 
 /**
@@ -67,7 +67,7 @@ public abstract class OsmSaxHandler extends DefaultHandler {
 
     private List<Long> nodeIds = new ArrayList<>();
 
-    private List<RelationMember> members = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 
 
     // Constructors
@@ -145,11 +145,11 @@ public abstract class OsmSaxHandler extends DefaultHandler {
                 break;
 
             case MEMBER_ELEMENT:
-                final long refMemberId = Long.valueOf(attrs.getValue(MEMBER_ATTR_REF));
+                final long refId = Long.valueOf(attrs.getValue(MEMBER_ATTR_REF));
                 final Type type = Type.valueOf(attrs.getValue(MEMBER_ATTR_TYPE).toLowerCase());
                 final String role = attrs.getValue(MEMBER_ATTR_ROLE);
 
-                this.members.add(OSM.relationMember(refMemberId, type, role));
+                this.members.add(OSM.member(type, refId, role));
                 break;
 
             default:

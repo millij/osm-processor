@@ -13,6 +13,7 @@ public abstract class OsmEntity {
     private final MetaInfo metaInfo;
     private final Map<String, String> tags;
 
+
     // Constructors
     // ------------------------------------------------------------------------
 
@@ -27,6 +28,7 @@ public abstract class OsmEntity {
         this(osmId, metaInfo, new HashMap<>());
     }
 
+
     // abstract methods
     // ------------------------------------------------------------------------
 
@@ -35,6 +37,7 @@ public abstract class OsmEntity {
      * 
      * @return The entity type enum value.
      */
+    @Deprecated
     public abstract Type getType();
 
 
