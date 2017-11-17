@@ -70,11 +70,6 @@ public final class Bound extends OsmEntity {
         return origin;
     }
 
-    @Override
-    public Type getType() {
-        return Type.bound;
-    }
-
 
     // Object Methods
     // ------------------------------------------------------------------------

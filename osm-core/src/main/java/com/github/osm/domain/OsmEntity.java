@@ -32,15 +32,6 @@ public abstract class OsmEntity {
     // abstract methods
     // ------------------------------------------------------------------------
 
-    /**
-     * Returns the specific data type represented by this entity.
-     * 
-     * @return The entity type enum value.
-     */
-    @Deprecated
-    public abstract Type getType();
-
-
 
     // Getters and Setters
     // ------------------------------------------------------------------------
@@ -61,6 +52,26 @@ public abstract class OsmEntity {
         return Collections.unmodifiableMap(tags);
     }
 
+
+    // Object Methods
+    // ------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        OsmEntity other = (OsmEntity) o;
+        return this.osmId == other.osmId;
+    }
+
+    
+    
     // Private definitions
     // ------------------------------------------------------------------------
 

@@ -1,5 +1,7 @@
 package com.github.osm.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,9 @@ public final class Relation extends OsmEntity {
 
     Relation(long osmId, MetaInfo metaInfo, Map<String, String> tags, List<Member> members) {
         super(osmId, metaInfo, tags);
-        this.members = members;
+
+        // init
+        this.members = members == null ? new ArrayList<>() : new ArrayList<>(members);
     }
 
     Relation(long osmId, MetaInfo metaInfo, List<Member> members) {
@@ -27,12 +31,7 @@ public final class Relation extends OsmEntity {
     // ------------------------------------------------------------------------
 
     public List<Member> getMembers() {
-        return members;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.relation;
+        return Collections.unmodifiableList(members);
     }
 
 
@@ -41,7 +40,7 @@ public final class Relation extends OsmEntity {
 
     @Override
     public String toString() {
-        return "Relation [members=" + members + "]";
+        return "Relation [osmId=" + getOsmId() + ", members=" + members + "]";
     }
 
 

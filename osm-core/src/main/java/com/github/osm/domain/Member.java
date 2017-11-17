@@ -6,7 +6,7 @@ import com.github.osm.domain.OsmEntity.Type;
 public final class Member {
 
     private final Type type;
-    private final long Id;
+    private final long id;
     private final String role;
 
 
@@ -17,7 +17,7 @@ public final class Member {
         super();
 
         this.type = type;
-        this.Id = id;
+        this.id = id;
         this.role = role;
     }
 
@@ -25,15 +25,15 @@ public final class Member {
     // Getters and Setters
     // ------------------------------------------------------------------------
 
-    public Type getMemberType() {
+    public Type getType() {
         return type;
     }
 
-    public long getMemberId() {
-        return Id;
+    public long getId() {
+        return id;
     }
 
-    public String getMemberRole() {
+    public String getRole() {
         return role;
     }
 
@@ -43,7 +43,7 @@ public final class Member {
 
     @Override
     public String toString() {
-        return "Member [type=" + type + ", Id=" + Id + ", role=" + role + "]";
+        return "Member [type=" + type + ", Id=" + id + ", role=" + role + "]";
     }
 
 }

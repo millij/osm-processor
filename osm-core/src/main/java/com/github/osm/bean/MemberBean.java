@@ -53,5 +53,10 @@ public class MemberBean {
     public static MemberBean from(long id, String role, WayBean way) {
         return new MemberBean(Type.way, id, role, way);
     }
+    
+    public static MemberBean from(long id, String role, RelationBean relation) {
+        return new MemberBean(Type.relation, id, role, relation);
+    }
+
 
 }

@@ -16,6 +16,7 @@ public final class Node extends OsmEntity {
     Node(long osmId, MetaInfo metaInfo, Map<String, String> tags, double latitude, double longitude) {
         super(osmId, metaInfo, tags);
 
+        // init
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -37,39 +38,12 @@ public final class Node extends OsmEntity {
     }
 
 
-    @Override
-    public Type getType() {
-        return Type.node;
-    }
-
-
     // Object Methods
     // ------------------------------------------------------------------------
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Node other = (Node) o;
-        if (Double.compare(latitude, other.getLatitude()) != 0) {
-            return false;
-        }
-
-        if (Double.compare(longitude, other.getLongitude()) != 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return "Node [" + latitude + ", " + longitude + "]";
+        return "Node [osmId=" + getOsmId() + ", latitude=" + latitude + ", longitude=" + longitude + "]";
     }
 
 }
