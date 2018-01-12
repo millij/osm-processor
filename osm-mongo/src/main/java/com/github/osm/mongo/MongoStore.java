@@ -13,6 +13,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 
 
 
@@ -43,6 +44,20 @@ public class MongoStore {
 
     // DB Methods
     // ------------------------------------------------------------------------
+
+    // Index
+
+    public void indexCollection(final String collectionName, final String field) {
+        // Sanity checks
+        if (StringUtils.isEmpty(collectionName)) {
+            throw new IllegalArgumentException("count :: Collection name should not be blank");
+        }
+
+        // Collection
+        MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        collection.createIndex(Indexes.descending(field));
+    }
+
 
     /**
      * Drops all documents of all the collections of the current database.

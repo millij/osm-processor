@@ -7,20 +7,22 @@ import java.util.stream.Collectors;
 
 import org.bson.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.osm.bean.OsmBean;
+import com.github.osm.domain.Member;
 import com.github.osm.domain.MetaInfo;
 import com.github.osm.domain.Node;
 import com.github.osm.domain.OSM;
-import com.github.osm.domain.OsmEntity;
 import com.github.osm.domain.OsmEntity.Type;
 import com.github.osm.domain.Relation;
-import com.github.osm.domain.RelationMember;
 import com.github.osm.domain.Way;
 
 
 @SuppressWarnings("unchecked")
 public class MongoMapper {
-    
+
     private MongoMapper() {
         // Util Class
     }
@@ -60,20 +62,6 @@ public class MongoMapper {
     // From Document Methods
     // ------------------------------------------------------------------------
 
-    @Deprecated
-    public static <T extends OsmEntity> T as(Class<T> clz, Document doc) {
-        // Switch by class
-        if (clz.equals(Node.class)) {
-            return (T) MongoMapper.node(doc);
-        } else if (clz.equals(Way.class)) {
-            return (T) MongoMapper.way(doc);
-        } else if (clz.equals(Relation.class)) {
-            return (T) MongoMapper.relation(doc);
-        }
-
-        throw new RuntimeException("Unknown OSM entity class passed");
-    }
-
     public static Node node(Document nodeDoc) {
         long osmId = (long) nodeDoc.get("osmId");
 
@@ -107,26 +95,26 @@ public class MongoMapper {
 
         List<Map<String, Object>> membersList = (List<Map<String, Object>>) relationDoc.get("members");
 
-        List<RelationMember> members = new ArrayList<>();
+        List<Member> members = new ArrayList<>();
         if (membersList != null && membersList.size() > 0) {
             members = membersList.stream().map(memberMap -> {
-                return relationMember(memberMap);
+                return member(memberMap);
             }).collect(Collectors.toList());
         }
 
         return OSM.relation(osmId, metaInfo, tags, members);
     }
 
-    public static RelationMember relationMember(Map<String, Object> memberMap) {
+    public static Member member(Map<String, Object> memberMap) {
         if (memberMap == null) {
             return null;
         }
 
-        long memberId = (long) memberMap.get("memberId");
-        Type memberType = Type.valueOf(memberMap.get("memberType").toString());
-        String memberRole = (String) memberMap.get("memberRole");
+        Type type = Type.valueOf(memberMap.get("type").toString());
+        long id = (long) memberMap.get("id");
+        String role = (String) memberMap.get("role");
 
-        return OSM.relationMember(memberId, memberType, memberRole);
+        return OSM.member(type, id, role);
     }
 
     public static MetaInfo metaInfo(Map<String, Object> metaInfo) {
@@ -143,5 +131,13 @@ public class MongoMapper {
         return OSM.metaInfo(version, changesetId, timestamp, userName, userId);
     }
 
+
+    // To JSON methods
+    // ------------------------------------------------------------------------
+
+    public static String toJson(OsmBean osmBean) throws JsonProcessingException {
+        MAPPER.setSerializationInclusion(Include.NON_EMPTY);
+        return MAPPER.writeValueAsString(osmBean);
+    }
 
 }

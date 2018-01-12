@@ -97,10 +97,15 @@ public class MongoOsmSaxHandler extends OsmSaxHandler {
         }
 
         // Save to DB
-        this.mongoStore.insert(node);
+        try {
+            this.mongoStore.insert(node);
+        } catch (Exception ex) {
+            String errMsg = String.format("Failed to insert Node in to DB : %s - ", node, node.getTags());
+            LOGGER.error(errMsg, ex);
+        }
 
         this.nodesCount++;
-        LOGGER.info("Created new Node in the DB : {}", node);
+        LOGGER.debug("Created new Node in the DB : {}", node);
     }
 
     @Override
@@ -110,10 +115,15 @@ public class MongoOsmSaxHandler extends OsmSaxHandler {
         }
 
         // Save to DB
-        this.mongoStore.insert(way);
+        try {
+            this.mongoStore.insert(way);
+        } catch (Exception ex) {
+            String errMsg = String.format("Failed to insert Way in to DB : %s - ", way, way.getTags());
+            LOGGER.error(errMsg, ex);
+        }
 
         this.waysCount++;
-        LOGGER.info("Created new Way in the DB : {}", way);
+        LOGGER.debug("Created new Way in the DB : {}", way);
     }
 
     @Override
@@ -123,10 +133,15 @@ public class MongoOsmSaxHandler extends OsmSaxHandler {
         }
 
         // Save to DB
-        this.mongoStore.insert(relation);
+        try {
+            this.mongoStore.insert(relation);
+        } catch (Exception ex) {
+            String errMsg = String.format("Failed to insert Relation in to DB : %s - ", relation, relation.getTags());
+            LOGGER.error(errMsg, ex);
+        }
 
         this.relationsCount++;
-        LOGGER.info("Created new Relation in the DB : {}", relation);
+        LOGGER.debug("Created new Relation in the DB : {}", relation);
     }
 
 

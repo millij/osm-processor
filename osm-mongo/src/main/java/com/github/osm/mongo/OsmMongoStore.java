@@ -1,15 +1,25 @@
 package com.github.osm.mongo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.osm.bean.MemberBean;
+import com.github.osm.bean.NodeBean;
+import com.github.osm.bean.RelationBean;
+import com.github.osm.bean.WayBean;
+import com.github.osm.domain.Member;
 import com.github.osm.domain.Node;
 import com.github.osm.domain.OsmEntity;
+import com.github.osm.domain.OsmEntity.Type;
 import com.github.osm.domain.Relation;
 import com.github.osm.domain.Way;
 import com.github.osm.mongo.helper.MongoConfig;
 import com.github.osm.mongo.helper.MongoMapper;
+import com.mongodb.client.FindIterable;
 
 
 /**
@@ -27,16 +37,27 @@ public class OsmMongoStore extends MongoStore {
 
 
     // Constructor
+    // ------------------------------------------------------------------------
 
     private OsmMongoStore(MongoConfig config) {
         super(config);
-
     }
 
     // Factory
 
     public static OsmMongoStore withConfig(MongoConfig config) {
         return new OsmMongoStore(config);
+    }
+
+
+    // DB Methods
+    // ------------------------------------------------------------------------
+
+    public void ensureIndexes() {
+        // index on id field
+        this.indexCollection(COLLECTION_NODE, "osmId");
+        this.indexCollection(COLLECTION_WAY, "osmId");
+        this.indexCollection(COLLECTION_RELATION, "osmId");
     }
 
 
@@ -97,8 +118,15 @@ public class OsmMongoStore extends MongoStore {
         return result == null ? null : MongoMapper.node(result);
     }
 
-    public Iterable<Document> nodes(final Document filter) {
-        return this.find(COLLECTION_NODE, filter);
+    public NodeBean nodeBean(final long osmId) {
+        // Node
+        Node node = this.node(osmId);
+        if (node == null) {
+            LOGGER.error("No Node object found with the passed id : {}", osmId);
+            return null;
+        }
+
+        return new NodeBean(node);
     }
 
 
@@ -112,9 +140,24 @@ public class OsmMongoStore extends MongoStore {
         return result == null ? null : MongoMapper.way(result);
     }
 
-    public Iterable<Document> ways(final Document filter) {
-        return this.find(COLLECTION_WAY, filter);
+    public WayBean wayBean(final long osmId) {
+        // Way
+        Way way = this.way(osmId);
+        if (way == null) {
+            LOGGER.error("No Way object found with the passed id : {}", osmId);
+            return null;
+        }
+
+        // NodesMap
+        final List<NodeBean> nodeBeans = new ArrayList<>();
+        for (long nodeId : way.getNodeIds()) {
+            Node node = this.node(nodeId);
+            nodeBeans.add(new NodeBean(node));
+        }
+
+        return new WayBean(way, nodeBeans);
     }
+
 
 
     // Relation
@@ -127,9 +170,60 @@ public class OsmMongoStore extends MongoStore {
         return result == null ? null : MongoMapper.relation(result);
     }
 
-    public Iterable<Document> relations(final Document filter) {
+    public RelationBean relationBean(final long osmId) {
+        // Way
+        Relation relation = this.relation(osmId);
+        if (relation == null) {
+            LOGGER.error("No Relation object found with the passed id : {}", osmId);
+            return null;
+        }
+
+        // NodesMap
+        final List<MemberBean> memberBeans = new ArrayList<>();
+        for (Member member : relation.getMembers()) {
+            final Type type = member.getType();
+            final long id = member.getId();
+            final String role = member.getRole();
+
+            // prepare bean
+            switch (type) {
+                case node:
+                    NodeBean nBean = this.nodeBean(id);
+                    memberBeans.add(MemberBean.from(id, role, nBean));
+                    break;
+                case way:
+                    WayBean wBean = this.wayBean(id);
+                    memberBeans.add(MemberBean.from(id, role, wBean));
+                    break;
+                case relation:
+                    RelationBean relBean = this.relationBean(id);
+                    memberBeans.add(MemberBean.from(id, role, relBean));
+                    break;
+                default:
+                    throw new RuntimeException("Unhandled member type  found : " + type);
+            }
+        }
+
+        return new RelationBean(relation, memberBeans);
+    }
+
+
+
+    // FindIterable Methods
+    // ------------------------------------------------------------------------
+
+    public FindIterable<Document> nodes(final Document filter) {
+        return this.find(COLLECTION_NODE, filter);
+    }
+
+    public FindIterable<Document> ways(final Document filter) {
+        return this.find(COLLECTION_WAY, filter);
+    }
+
+    public FindIterable<Document> relations(final Document filter) {
         return this.find(COLLECTION_RELATION, filter);
     }
+
 
 
     // Private Methods
