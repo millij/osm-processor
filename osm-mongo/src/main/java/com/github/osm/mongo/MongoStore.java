@@ -21,6 +21,8 @@ public class MongoStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoStore.class);
 
+    public static final int DEFAULT_BATCH_SIZE = 100;
+
     protected final MongoClient client;
     protected final MongoDatabase database;
 
@@ -190,17 +192,30 @@ public class MongoStore {
      * @return {@link FindIterable} of documents.
      */
     public FindIterable<Document> find(final String collectionName, final Document filter) {
+        return this.find(collectionName, filter, DEFAULT_BATCH_SIZE);
+    }
+
+
+    /**
+     * Find all documents of a collection, matching the passed filter
+     * 
+     * @param collectionName name of the collection
+     * @param filter filtering criteria
+     * @param batchSize the number of documents to return per batch.
+     * 
+     * @return {@link FindIterable} of documents.
+     */
+    public FindIterable<Document> find(final String collectionName, final Document filter, final int batchSize) {
         // Sanity checks
         if (StringUtils.isEmpty(collectionName)) {
             throw new IllegalArgumentException("find :: Collection name should not be blank");
         }
 
         MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        FindIterable<Document> result = collection.find(filter);
+        FindIterable<Document> result = collection.find(filter).batchSize(batchSize);
 
         return result;
     }
 
-
-
+    
 }
