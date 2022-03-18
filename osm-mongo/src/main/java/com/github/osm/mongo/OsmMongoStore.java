@@ -30,10 +30,10 @@ public class OsmMongoStore extends MongoStore {
     private static final Logger LOGGER = LoggerFactory.getLogger(OsmMongoStore.class);
 
     // Collections
-    public static final String COLLECTION_BBOX = "bbox";
-    public static final String COLLECTION_NODE = Node.class.getSimpleName().toLowerCase();
-    public static final String COLLECTION_WAY = Way.class.getSimpleName().toLowerCase();
-    public static final String COLLECTION_RELATION = Relation.class.getSimpleName().toLowerCase();
+    public static final String COLLECTION_BBOX = "osm_bbox";
+    public static final String COLLECTION_NODE = "osm_nodes";
+    public static final String COLLECTION_WAY = "osm_ways";
+    public static final String COLLECTION_RELATION = "osm_relations";
 
 
     // Constructor
@@ -58,6 +58,14 @@ public class OsmMongoStore extends MongoStore {
         this.indexCollection(COLLECTION_NODE, "osmId");
         this.indexCollection(COLLECTION_WAY, "osmId");
         this.indexCollection(COLLECTION_RELATION, "osmId");
+    }
+
+    @Override
+    public void emptyCollections() {
+        // drop only relevant collections
+        this.database.getCollection(COLLECTION_NODE).drop();
+        this.database.getCollection(COLLECTION_WAY).drop();
+        this.database.getCollection(COLLECTION_RELATION).drop();
     }
 
 
