@@ -2,6 +2,8 @@ package com.github.osm.mongo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -120,16 +122,16 @@ public class OsmMongoStore extends MongoStore {
 
     public Node node(final long osmId) {
         // Result
-        Document result = this.findOne(COLLECTION_NODE, new Document("osmId", osmId));
+        final Document result = this.findOne(COLLECTION_NODE, new Document("osmId", osmId));
         LOGGER.debug("Fetched Node with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.node(result);
+        return Objects.isNull(result) ? null : MongoMapper.node(result);
     }
 
     public NodeBean nodeBean(final long osmId) {
         // Node
-        Node node = this.node(osmId);
-        if (node == null) {
+        final Node node = this.node(osmId);
+        if (Objects.isNull(node)) {
             LOGGER.error("No Node object found with the passed id : {}", osmId);
             return null;
         }
@@ -137,32 +139,44 @@ public class OsmMongoStore extends MongoStore {
         return new NodeBean(node);
     }
 
+    public List<NodeBean> nodeBeans(final List<Long> osmIds) {
+        // Sanity checks
+        if (Objects.isNull(osmIds)) {
+            return new ArrayList<>();
+        }
+
+        // Filter
+        final Document filter = new Document("osmId", new Document("$in", osmIds));
+
+        // Result
+        final List<Document> nodes = this.find(COLLECTION_NODE, filter, 1, osmIds.size());
+        final List<NodeBean> nodeBeans = //
+                nodes.stream().map(MongoMapper::node).map(NodeBean::new).collect(Collectors.toList());
+
+        return nodeBeans;
+    }
+
 
     // Way
 
     public Way way(final long osmId) {
         // Result
-        Document result = this.findOne(COLLECTION_WAY, new Document("osmId", osmId));
+        final Document result = this.findOne(COLLECTION_WAY, new Document("osmId", osmId));
         LOGGER.debug("Fetched Way with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.way(result);
+        return Objects.isNull(result) ? null : MongoMapper.way(result);
     }
 
     public WayBean wayBean(final long osmId) {
         // Way
-        Way way = this.way(osmId);
-        if (way == null) {
+        final Way way = this.way(osmId);
+        if (Objects.isNull(way)) {
             LOGGER.error("No Way object found with the passed id : {}", osmId);
             return null;
         }
 
         // NodesMap
-        final List<NodeBean> nodeBeans = new ArrayList<>();
-        for (long nodeId : way.getNodeIds()) {
-            Node node = this.node(nodeId);
-            nodeBeans.add(new NodeBean(node));
-        }
-
+        final List<NodeBean> nodeBeans = this.nodeBeans(way.getNodeIds());
         return new WayBean(way, nodeBeans);
     }
 
@@ -172,16 +186,16 @@ public class OsmMongoStore extends MongoStore {
 
     public Relation relation(final long osmId) {
         // Result
-        Document result = this.findOne(COLLECTION_RELATION, new Document("osmId", osmId));
+        final Document result = this.findOne(COLLECTION_RELATION, new Document("osmId", osmId));
         LOGGER.debug("Fetched Relation with OSM id : {} - {}", osmId, result);
 
-        return result == null ? null : MongoMapper.relation(result);
+        return Objects.isNull(result) ? null : MongoMapper.relation(result);
     }
 
     public RelationBean relationBean(final long osmId) {
         // Way
-        Relation relation = this.relation(osmId);
-        if (relation == null) {
+        final Relation relation = this.relation(osmId);
+        if (Objects.isNull(relation)) {
             LOGGER.error("No Relation object found with the passed id : {}", osmId);
             return null;
         }
