@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.github.osm.mongo.helper.MongoConfig;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -37,8 +39,15 @@ public class MongoStore {
             throw new IllegalArgumentException("MongoStore :: config, should not be blank");
         }
 
-        // client
-        this.client = new MongoClient(config.getHost(), config.getPort());
+        // MongoDB Client
+        final ServerAddress address = new ServerAddress(config.getHost(), config.getPort());
+        final MongoClientOptions clientOpts = MongoClientOptions.builder() //
+                .connectTimeout(60000) //
+                .maxConnectionIdleTime(0) //
+                .minConnectionsPerHost(16) //
+                .build();
+        this.client = new MongoClient(address, clientOpts);
+
         this.database = client.getDatabase(config.getDatabase());
         LOGGER.info("Successfully initiated the Mongo Connection with config : {}", config);
     }
@@ -80,6 +89,7 @@ public class MongoStore {
      * Count the documents of a collection.
      * 
      * @param collectionName name of the collection to insert the document in to.
+     * 
      * @return total no. of documents of a collection.
      */
     public long count(final String collectionName) {
@@ -217,5 +227,5 @@ public class MongoStore {
         return result;
     }
 
-    
+
 }
