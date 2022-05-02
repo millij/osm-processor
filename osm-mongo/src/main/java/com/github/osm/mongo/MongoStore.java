@@ -42,6 +42,7 @@ public class MongoStore {
         // MongoDB Client
         final ServerAddress address = new ServerAddress(config.getHost(), config.getPort());
         final MongoClientOptions clientOpts = MongoClientOptions.builder() //
+                .socketTimeout(60000) //
                 .connectTimeout(60000) //
                 .maxConnectionIdleTime(0) //
                 .minConnectionsPerHost(16) //
@@ -65,7 +66,7 @@ public class MongoStore {
         }
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
         collection.createIndex(Indexes.descending(field));
     }
 
@@ -99,7 +100,7 @@ public class MongoStore {
         }
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
         return collection.count();
     }
 
@@ -123,7 +124,7 @@ public class MongoStore {
         }
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
         collection.insertOne(dbObject);
     }
 
@@ -145,8 +146,8 @@ public class MongoStore {
         }
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        Document result = collection.find(filter).first();
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final Document result = collection.find(filter).first();
 
         return result;
     }
@@ -168,8 +169,8 @@ public class MongoStore {
         }
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        List<Document> result = collection.find(filter).into(new ArrayList<>());
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final List<Document> result = collection.find(filter).noCursorTimeout(true).into(new ArrayList<>());
 
         return result;
     }
@@ -187,8 +188,9 @@ public class MongoStore {
         final int skipCount = (pageNo - 1) * pageSize;
 
         // Collection
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        List<Document> result = collection.find(filter).skip(skipCount).limit(pageSize).into(new ArrayList<>());
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final List<Document> result =
+                collection.find(filter).noCursorTimeout(true).skip(skipCount).limit(pageSize).into(new ArrayList<>());
 
         return result;
     }
@@ -221,8 +223,8 @@ public class MongoStore {
             throw new IllegalArgumentException("find :: Collection name should not be blank");
         }
 
-        MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        FindIterable<Document> result = collection.find(filter).batchSize(batchSize);
+        final MongoCollection<Document> collection = this.database.getCollection(collectionName);
+        final FindIterable<Document> result = collection.find(filter).noCursorTimeout(true).batchSize(batchSize);
 
         return result;
     }
