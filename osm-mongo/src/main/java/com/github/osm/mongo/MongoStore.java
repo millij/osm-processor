@@ -31,7 +31,7 @@ public class MongoStore {
 
     // Constructor
 
-    public MongoStore(MongoConfig config) {
+    public MongoStore(final MongoConfig config) {
         super();
 
         // Sanity checks
@@ -42,8 +42,8 @@ public class MongoStore {
         // MongoDB Client
         final ServerAddress address = new ServerAddress(config.getHost(), config.getPort());
         final MongoClientOptions clientOpts = MongoClientOptions.builder() //
-                .socketTimeout(60000) //
-                .connectTimeout(60000) //
+                .socketTimeout(0) //
+                .connectTimeout(0) //
                 .maxConnectionIdleTime(0) //
                 .minConnectionsPerHost(16) //
                 .build();

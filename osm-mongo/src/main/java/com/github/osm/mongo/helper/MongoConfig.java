@@ -14,6 +14,7 @@ public final class MongoConfig {
 
 
     // Constructor
+    // ------------------------------------------------------------------------
 
     private MongoConfig(String host, int port, String database) {
         super();
@@ -34,6 +35,7 @@ public final class MongoConfig {
 
 
     // Getters and Setters
+    // ------------------------------------------------------------------------
 
     public String getHost() {
         return host;
@@ -48,7 +50,17 @@ public final class MongoConfig {
     }
 
 
+    // Object Methods
+    // ------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "MongoConfig [host=" + host + ", port=" + port + ", database=" + database + "]";
+    }
+
+
     // Factory
+    // ------------------------------------------------------------------------
 
     public static MongoConfig with(String host, int port, String database) {
         return new MongoConfig(host, port, database);

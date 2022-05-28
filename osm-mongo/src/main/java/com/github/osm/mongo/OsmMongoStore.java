@@ -1,7 +1,9 @@
 package com.github.osm.mongo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -139,10 +141,10 @@ public class OsmMongoStore extends MongoStore {
         return new NodeBean(node);
     }
 
-    public List<NodeBean> nodeBeans(final List<Long> osmIds) {
+    public Map<Long, NodeBean> nodeBeans(final List<Long> osmIds) {
         // Sanity checks
         if (Objects.isNull(osmIds)) {
-            return new ArrayList<>();
+            return new HashMap<>();
         }
 
         // Filter
@@ -150,10 +152,10 @@ public class OsmMongoStore extends MongoStore {
 
         // Result
         final List<Document> nodes = this.find(COLLECTION_NODE, filter, 1, osmIds.size());
-        final List<NodeBean> nodeBeans = //
-                nodes.stream().map(MongoMapper::node).map(NodeBean::new).collect(Collectors.toList());
+        final Map<Long, NodeBean> nodeBeanMap = //
+                nodes.stream().map(MongoMapper::node).collect(Collectors.toMap(n -> n.getOsmId(), NodeBean::new));
 
-        return nodeBeans;
+        return nodeBeanMap;
     }
 
 
@@ -175,8 +177,14 @@ public class OsmMongoStore extends MongoStore {
             return null;
         }
 
-        // NodesMap
-        final List<NodeBean> nodeBeans = this.nodeBeans(way.getNodeIds());
+        // NodeIds
+        final List<Long> nodeIds = way.getNodeIds();
+
+        // NodesList
+        final Map<Long, NodeBean> nodeBeansMap = this.nodeBeans(nodeIds);
+        final List<NodeBean> nodeBeans =
+                nodeIds.stream().map(nodeId -> nodeBeansMap.get(nodeId)).collect(Collectors.toList());
+
         return new WayBean(way, nodeBeans);
     }
 
