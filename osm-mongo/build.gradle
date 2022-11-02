@@ -11,8 +11,8 @@ repositories {
 group = 'com.github.osm'
 version = '0.1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
 
 dependencies {
 
@@ -22,23 +22,27 @@ dependencies {
     compile project(':osm-core')
 
     // Slf4j
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '2.0.3'
+
 
     // Jackson
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.3'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.3'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4.2'
+
 
     // Mongo
-    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
+    compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.7.2'
 
 
     // Test compile
     // ----------------------------------------------------------------------------------
 
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    // Slf4j
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.3'
 
-    testCompile group: "org.slf4j", name: "slf4j-log4j12", version: "1.7.12"
+    // JUnit
+    testCompile group: 'junit', name: 'junit', version: '4.+'
 
 }
 
@@ -63,10 +67,8 @@ task run(type: JavaExec, dependsOn: classes) {
 
 // Java Source Compatibility
 
-compileJava.doFirst { println "Java source compatibility version : " + sourceCompatibility }
-
-tasks.withType(JavaCompile) {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
+compileJava.doFirst {
+    println "Java source compatibility version : " + sourceCompatibility
 }
+
 

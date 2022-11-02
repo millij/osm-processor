@@ -1,5 +1,7 @@
 package com.github.osm.mongo;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.osm.mongo.helper.MongoConfig;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.ServerAddress;
+import com.mongodb.Block;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-
+import com.mongodb.connection.ConnectionPoolSettings;
+import com.mongodb.connection.SocketSettings;
 
 
 public class MongoStore {
@@ -39,17 +44,35 @@ public class MongoStore {
             throw new IllegalArgumentException("MongoStore :: config, should not be blank");
         }
 
-        // MongoDB Client
-        final ServerAddress address = new ServerAddress(config.getHost(), config.getPort());
-        final MongoClientOptions clientOpts = MongoClientOptions.builder() //
-                .socketTimeout(0) //
-                .connectTimeout(0) //
-                .maxConnectionIdleTime(0) //
-                .minConnectionsPerHost(16) //
-                .build();
-        this.client = new MongoClient(address, clientOpts);
+        // Inputs
+        final String host = config.getHost();
+        final int port = config.getPort();
+        final String dbName = config.getDatabase();
 
-        this.database = client.getDatabase(config.getDatabase());
+        // MongoDB URI
+        final String mongoURI = String.format("mongodb://%s:%d", host, port);
+        LOGGER.info("MongoDB URI : {}", mongoURI);
+
+        // MongoDB Client Settings
+        final Block<ConnectionPoolSettings.Builder> connPoolSettings = builder -> builder //
+                .maxConnectionIdleTime(0, MILLISECONDS) //
+                .minSize(16);
+
+        final Block<SocketSettings.Builder> socketSettings = builder -> builder //
+                .connectTimeout(0, MILLISECONDS) //
+                .readTimeout(0, MILLISECONDS);
+
+        final MongoClientSettings clientSettings = MongoClientSettings.builder() //
+                .applyConnectionString(new ConnectionString(mongoURI)) //
+                .applyToConnectionPoolSettings(connPoolSettings) //
+                .applyToSocketSettings(socketSettings) //
+                .build();
+
+        // MongoDB Client
+        this.client = MongoClients.create(clientSettings);
+        LOGGER.info("MongoDataStore initiated with :: {}:{}", host, port);
+
+        this.database = client.getDatabase(dbName);
         LOGGER.info("Successfully initiated the Mongo Connection with config : {}", config);
     }
 
@@ -101,7 +124,7 @@ public class MongoStore {
 
         // Collection
         final MongoCollection<Document> collection = this.database.getCollection(collectionName);
-        return collection.count();
+        return collection.countDocuments();
     }
 
 
